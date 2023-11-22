@@ -99,8 +99,43 @@
         </div>
     </div>
 </div>
-
+<script>
+    const slides = document.querySelector('.slides');
+    let counter = 1;
+  
+    setInterval(() => {
+      slides.style.transition = 'transform 0.5s ease-in-out';
+      slides.style.transform = `translateX(${-counter * 100}%)`;
+  
+      counter++;
+  
+      if (counter >= slides.children.length) {
+        counter = 0;
+      }
+    }, 3000);
+  
+    let modalShown = false;
+  
+    function showModal() {
+      console.log('Модальное окно!');
+      modalShown = true;
+  
+      window.removeEventListener('scroll', handleScroll);
+    }
+  
+    function handleScroll() {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight && !modalShown) {
+        showModal();
+      }
+    }
+  
+    window.addEventListener('scroll', handleScroll);
+  
+    setTimeout(() => {
+      showModal();
+    }, 10000);
+  </script>
+  <script src="../js/home_works.js"></script>
+  <script src="../js/modal.js"></script>
 </body>
-<script src="../js/home_works.js"></script>
-<script src="../js/modal.js"></script>
 </html>
