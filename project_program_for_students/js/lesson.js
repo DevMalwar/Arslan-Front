@@ -93,3 +93,63 @@ const tabs = {
   };
   
   window.addEventListener('scroll', scrollCheck);
+
+// Currency Converter
+
+const somInput = document.querySelector('#som');
+const usdInput = document.querySelector('#usd');
+const eurInput = document.querySelector('#eur');
+
+const converter = (element, targetElement, type) => {
+    element.oninput = () => {
+        const request = new XMLHttpRequest();
+        request.open('GET', '../data/converter.json');
+        request.setRequestHeader('content-type', 'application/json');
+        request.send();
+
+        request.onload = () => {
+            if (request.status === 200) {
+                const data = JSON.parse(request.response);
+                switch (type) {
+                    case 'som':
+                        targetElement.value = (element.value / data.usd).toFixed(2);
+                        eurInput.value = (element.value / data.eur).toFixed(2);
+                        if (element.value === '') {
+                            usdInput.value = '';
+                            eurInput.value = '';
+                        }
+                        break;
+                    case 'usd':
+                        targetElement.value = (element.value * data.usd).toFixed(2);
+                        eurInput.value = (element.value * data.usd / data.eur).toFixed(2);
+                        if (element.value === '') {
+                            somInput.value = '';
+                            eurInput.value = '';
+                        }
+                        break;
+                    case 'eur':
+                        targetElement.value = (element.value * data.eur).toFixed(2);
+                        usdInput.value = (element.value * data.eur / data.usd).toFixed(2);
+                        if (element.value === '') {
+                            somInput.value = '';
+                            usdInput.value = '';
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                console.error(`Failed to load converter data. Status: ${request.status}`);
+            }
+        };
+
+        request.onerror = () => {
+            console.error('Error occurred while making the request.');
+        };
+    };
+};
+
+converter(somInput, usdInput, 'som');
+converter(usdInput, somInput, 'usd');
+converter(eurInput, somInput, 'eur');
+
