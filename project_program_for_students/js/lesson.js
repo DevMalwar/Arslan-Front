@@ -153,3 +153,41 @@ converter(somInput, usdInput, 'som');
 converter(usdInput, somInput, 'usd');
 converter(eurInput, somInput, 'eur');
 
+// Functionality for the PREV and NEXT buttons
+
+const cards = document.querySelector('.card');
+const btnNext = document.querySelector('#btn-next');
+const btnPrev = document.querySelector('#btn-prev');
+
+let count = 1;
+
+function loadCardData(cardNumber) {
+    fetch(`https://jsonplaceholder.typicode.com/todos/${cardNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            cards.innerHTML = `
+                <p>${data.title}</p>
+                <p style="color: ${data.completed ? 'green' : 'red'}">${data.completed}</p>
+                <span>${data.id}</span>
+            `;
+        });
+}
+
+function updateCard(direction) {
+    count += direction;
+    if (count > 200) {
+        count = 1;
+    } else if (count < 1) {
+        count = 200;
+    }
+    loadCardData(count);
+}
+
+loadCardData(count);
+
+btnNext.addEventListener('click', () => updateCard(1));
+btnPrev.addEventListener('click', () => updateCard(-1));
+
+fetch('https://jsonplaceholder.typicode.com/posts')
+    .then(response => response.json())
+    .then(data => console.log(data));
